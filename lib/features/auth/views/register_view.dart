@@ -40,8 +40,7 @@ class RegisterView extends StatelessWidget {
                         style: Styles.textStyle24,
                       ),
                       const SizedBox(height: 8),
-                      const Text('Register',
-                          style: Styles.textStyle16),
+                      const Text('Register', style: Styles.textStyle16),
                       const SizedBox(height: 24),
                       const Text('Email', style: Styles.textStyle16),
                       const SizedBox(height: 8),
@@ -80,17 +79,11 @@ class RegisterView extends StatelessWidget {
                       // const RememberMe(),
                       const SizedBox(height: 24),
 
-
                       CustomButton(
                         text: 'Register',
                         height: 40,
                         onTap: () {
-
                           AppUtil.mainNavigator(context, LoginView());
-
-                           FirebaseFirestore.instance.collection('users').add({
-                            "name":"Karim"
-                          }).then((value) => print('done')).catchError((error){print(error.toString());});
                         },
                       ),
                       const SizedBox(height: 16),
