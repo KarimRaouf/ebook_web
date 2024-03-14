@@ -1,40 +1,50 @@
+import 'package:ebook_web/core/utils/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../core/utils/app_ui.dart';
-import '../core/utils/styles.dart';
-
+// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
-  const CustomButton({
+  CustomButton({
     super.key,
-    this.color = AppUI.navyBlue,
-    this.textColor = AppUI.whiteColor,
     required this.text,
-    required this.height,
-    required this.onTap,
+    this.onTap,
+    this.size,
+    required this.buttomWidth,
+    this.hasChild = true,
   });
 
-  final Color color;
-  final Color textColor;
   final String text;
-  final double height;
-  final VoidCallback onTap;
+  void Function()? onTap;
+  double? size;
+  final double buttomWidth;
+  final bool hasChild;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      child: Container(
-        height: height,
-        decoration: ShapeDecoration(
-          color: color,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        ),
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: Styles.textStyle16.copyWith(color: textColor),
+      child: Card(
+        elevation: 10,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        color: AppUI.navyBlue,
+        child: Container(
+          width: buttomWidth,
+          height: 50,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          child: Center(
+            child: hasChild
+                ? Text(
+              text,
+              style: TextStyle(
+                  fontFamily: 'futur',
+                  color: Colors.white,
+                  fontSize: size),
+            )
+                : const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(color: Colors.white , strokeWidth: 3),
+            ),
           ),
         ),
       ),

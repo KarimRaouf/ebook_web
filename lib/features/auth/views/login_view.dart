@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/utils/app_util.dart';
 import '../../../core/utils/styles.dart';
+import '../../../shared/cache_helper.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_textfield.dart';
 import '../view_model/auth_cubit.dart';
@@ -14,60 +15,129 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthStates>(
-      listener: (context, state) {},
+    double mediaHeight = MediaQuery.sizeOf(context).height; //!900
+    double mediaWidth = MediaQuery.sizeOf(context).width; //!400
+    const border = OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.grey, width: 1),
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+    );
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+
+        if (state is LoginErrorState) {
+          AppUtil.showToast(message: state.error);
+        }
+
+        if (state is LoginSuccessState) {
+          CacheHelper.saveData(
+            key: 'uId',
+            value: state.uId,
+          ).then((value) {
+            // navigateAndFinish(context, SocialLayout());
+          });
+
+          AppUtil.showToast(message: 'Login Successfully');
+
+        }
+
+
+      },
       builder: (context, state) {
         AuthCubit authCubit = AuthCubit.get(context);
         return Scaffold(
           body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppUtil.responsiveWidth(context) * 0.35,
-                    vertical: AppUtil.responsiveHeight(context) * 0.1,
+            child: Form(
+              key: authCubit.loginFormKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppUtil.responsiveWidth(context) * 0.35,
+                      vertical: AppUtil.responsiveHeight(context) * 0.1,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Welcome on board!',
+                          style: Styles.textStyle24,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text('Sign in to your account',
+                            style: Styles.textStyle14),
+                        const SizedBox(height: 24),
+                        const Text('Email', style: Styles.textStyle16),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          textInputType: TextInputType.emailAddress,
+                          controller: authCubit.emailLoginController,
+                          hint: 'Enter your Email',
+                          validation: true,
+                           height: 80,
+
+                        ),
+                        // const SizedBox(height: 16),
+                        const Text('Password', style: Styles.textStyle16),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          textInputType: TextInputType.visiblePassword,
+                          controller: authCubit.passwordLoginController,
+
+                          hint: 'Enter your password',
+                          validation: true,
+                          height: 80,
+                          obscureText: true,
+                        ),
+                        const SizedBox(height: 8),
+                        // const RememberMe(),
+                        const SizedBox(height: 8),
+                        state is LoginLoadingState
+                            ? CustomButton(
+                                size: 25,
+                                hasChild: false,
+                                text: 'Login',
+                                onTap: () {},
+                                buttomWidth: mediaWidth > 400
+                                    ? .85 * mediaWidth
+                                    : .75 * mediaWidth,
+                              )
+                            : CustomButton(
+                                size: 25,
+                                text: 'Login',
+                                onTap: () {
+                                  if (authCubit.loginFormKey.currentState!
+                                      .validate()) {
+
+                                    authCubit.userLogin(
+                                      email: authCubit.emailLoginController.text,
+                                      password:authCubit.passwordLoginController.text,
+                                    );
+
+                                  }
+                                },
+                                buttomWidth: mediaWidth > 400
+                                    ? .85 * mediaWidth
+                                    : .75 * mediaWidth,
+                              ),
+
+                        TextButton(
+                          onPressed: () {
+                            AppUtil.mainNavigator(context, LoginView());
+                          },
+                          child: const Text(
+                            'Login',
+                            style: Styles.textStyle12,
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Welcome on board!',
-                        style: Styles.textStyle24,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text('Sign in to your account',
-                          style: Styles.textStyle14),
-                      const SizedBox(height: 24),
-                      const Text('Email', style: Styles.textStyle16),
-                      const SizedBox(height: 8),
-                      CustomTextField(
-                        textInputType: TextInputType.emailAddress,
-                        controller: authCubit.emailController,
-                        hint: 'Enter your Email',
-                      ),
-                      const SizedBox(height: 16),
-                      const Text('Password', style: Styles.textStyle16),
-                      const SizedBox(height: 8),
-                      CustomTextField(
-                        textInputType: TextInputType.visiblePassword,
-                        controller: authCubit.passwordController,
-                        hint: 'Enter your password',
-                      ),
-                      const SizedBox(height: 8),
-                      // const RememberMe(),
-                      const SizedBox(height: 16),
-                      CustomButton(
-                        text: 'Login',
-                        height: 40,
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

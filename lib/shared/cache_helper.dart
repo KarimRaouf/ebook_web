@@ -3,41 +3,36 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CacheHelper {
   static SharedPreferences? sharedPreferences;
 
-  static Future<String> getSavedString(
-      String value, String defaultValue) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    String? savedValue = _prefs.getString(value) ?? defaultValue;
-
-    return savedValue;
+  static init() async {
+    sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static Future<bool> removeString(String key) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    bool savedValue = await _prefs.remove(key);
-    return savedValue;
+  static Future<bool> putBoolean({
+    required String key,
+    required bool value,
+  }) async {
+    return await sharedPreferences!.setBool(key, value);
   }
 
-  static Future<bool> setSavedString(
-      String key,
-      String value,
-      ) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    bool savedValue = await _prefs.setString(key, value);
-
-    return savedValue;
+  static dynamic getData({
+    required String key,
+  }) {
+    return sharedPreferences?.get(key);
   }
 
-  static Future<bool> containsString(
-      String key,
-      ) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    bool savedValue = await _prefs.containsKey(key);
-
-    return savedValue;
+  static Future<bool> saveData({
+    required String key,
+    required dynamic value,
+  }) async {
+    if (value is String) return await sharedPreferences!.setString(key, value);
+    if (value is int) return await sharedPreferences!.setInt(key, value);
+    if (value is bool) return await sharedPreferences!.setBool(key, value);
+    return await sharedPreferences!.setDouble(key, value);
   }
 
-  static logout(context) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    await _prefs.clear();
+  static Future<bool> removeData({
+    required String key,
+  }) async {
+    return await sharedPreferences!.remove(key);
   }
 }
