@@ -7,6 +7,7 @@ import '../../../core/utils/styles.dart';
 import '../../../shared/cache_helper.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_textfield.dart';
+import '../../admin_panel/views/panel_view.dart';
 import '../view_model/auth_cubit.dart';
 import '../view_model/auth_state.dart';
 
@@ -29,13 +30,14 @@ class LoginView extends StatelessWidget {
         }
 
         if (state is LoginSuccessState) {
-          CacheHelper.saveData(
-            key: 'uId',
-            value: state.uId,
-          ).then((value) {
-            // navigateAndFinish(context, SocialLayout());
-          });
+          // CacheHelper.saveData(
+          //   key: 'uId',
+          //   value: state.uId,
+          // ).then((value) {
+          //   // navigateAndFinish(context, SocialLayout());
+          // });
 
+          AppUtil.removeUntilNavigator(context, PanelView());
           AppUtil.showToast(message: 'Login Successfully');
 
         }
@@ -127,7 +129,7 @@ class LoginView extends StatelessWidget {
                             AppUtil.mainNavigator(context, LoginView());
                           },
                           child: const Text(
-                            'Login',
+                            'Register',
                             style: Styles.textStyle12,
                           ),
                         ),

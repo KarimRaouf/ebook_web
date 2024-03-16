@@ -67,6 +67,10 @@ dependencies:
   cloud_firestore: ^4.12.0
   firebase_auth: ^4.0.1
   conditional_builder_null_safety: ^0.0.6
+  file_picker: ^6.2.0
+  firebase_storage: ^11.6.10
+  firebase: ^9.0.3
+  universal_platform: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:

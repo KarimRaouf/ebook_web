@@ -1,5 +1,4 @@
 import 'package:ebook_web/core/utils/app_ui.dart';
-import 'package:ebook_web/features/admin_panel/views/users_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,8 +13,8 @@ import '../view_model/panel_cubit.dart';
 import '../view_model/panel_state.dart';
 import 'books_view.dart';
 
-class PanelView extends StatelessWidget {
-  const PanelView({super.key});
+class UsersView extends StatelessWidget {
+  const UsersView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +22,14 @@ class PanelView extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         PanelCubit authCubit = PanelCubit.get(context);
-        return Scaffold(
+        return  Scaffold(
           appBar: AppBar(
             title: const Text('Admin Panel'),
           ),
           drawer: CustomDrawer(),
-          body: const Center(
-            child: Text('Select an option from the drawer'),
+
+          body: Center(
+            child: Text('Users'),
           ),
         );
       },

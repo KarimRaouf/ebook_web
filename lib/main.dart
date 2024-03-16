@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_cubit.dart';
+import 'package:ebook_web/features/admin_panel/views/books_view.dart';
 import 'package:ebook_web/features/admin_panel/views/panel_view.dart';
 import 'package:ebook_web/features/auth/views/login_view.dart';
 import 'package:ebook_web/features/auth/views/register_view.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           // scaffoldBackgroundColor: AppUI.whiteColor,
         ),
-        home: startWidget,
+        home: BooksView(),
       ),
     );
   }

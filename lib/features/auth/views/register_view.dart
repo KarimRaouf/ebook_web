@@ -24,6 +24,8 @@ class RegisterView extends StatelessWidget {
         if (state is AuthRegisterError) {
           AppUtil.showToast(message: state.errorMessage);
         } else if (state is CreateUserSuccessState) {
+          AppUtil.showToast(message: 'Register successfully');
+
           AppUtil.mainNavigator(context, LoginView());
         }
       },

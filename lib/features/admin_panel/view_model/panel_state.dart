@@ -8,3 +8,4 @@ abstract class PanelState {}
 
 class PanelInitial extends PanelState {}
 
+class PickFileState extends PanelState {}
