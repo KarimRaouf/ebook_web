@@ -72,33 +72,61 @@ class UsersView extends StatelessWidget {
 
                               return DataRow(
                                 cells: <DataCell>[
-                                  DataCell(
-                                    Text('${index + 1}. ${snapshot.data!.docs[index]['email']}'),
-                                  ),
-                                  // DataCell(Text('Pending')),
-
-                                  DataCell(Text(snapshot.data!.docs[index]['status'],style: Styles.textStyle14.copyWith(color: snapshot.data!.docs[index]['status'] == 'Accepted'?Colors.green:Colors.redAccent,fontWeight: FontWeight.bold),)),
-                                  DataCell(
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.check,
-                                              color: Colors.green),
-                                          onPressed: () {
-                                            panelCubit.updateUserStatus(userId: snapshot.data!.docs[index]['uId'],status: 'Accepted');
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.close,
-                                              color: Colors.red),
-                                          onPressed: () {
-                                            panelCubit.updateUserStatus(userId: snapshot.data!.docs[index]['uId'],status: 'Rejected');
-                                          },
-                                        ),
-                                      ],
+                                  if (snapshot.data!.docs[index]['status'] ==
+                                      'Requested') ...[
+                                    DataCell(
+                                      Text(
+                                          '${index + 1}. ${snapshot.data!.docs[index]['email']}'),
                                     ),
-                                  ),
+
+                                    // const DataCell(Text('Pending')),
+                                    DataCell(Text(
+                                      snapshot.data!.docs[index]['status'],
+                                      style: Styles.textStyle14.copyWith(
+                                          color: snapshot.data!.docs[index]
+                                                      ['status'] ==
+                                                  'Accepted'
+                                              ? Colors.green
+                                              : Colors.redAccent,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                    DataCell(
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.check,
+                                                color: Colors.green),
+                                            onPressed: () {
+                                              panelCubit.updateUserStatus(
+                                                  userId: snapshot
+                                                      .data!.docs[index]['uId'],
+                                                  status: 'Accepted');
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.close,
+                                                color: Colors.red),
+                                            onPressed: () {
+                                              panelCubit.updateUserStatus(
+                                                  userId: snapshot
+                                                      .data!.docs[index]['uId'],
+                                                  status: 'Rejected');
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    DataCell(
+                                      Text(
+                                        'No Requests',
+                                        style: Styles.textStyle14.copyWith(
+                                            color: AppUI.blackColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               );
                             },
