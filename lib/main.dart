@@ -26,13 +26,13 @@ Future<void> main() async {
     measurementId: "G-JCPJG3JY4K",
   ));
 
-  String? uId =await  CacheHelper.getData(key: 'uId');
-  Widget startView = PanelView();
-  if (uId != null) {
-    startView = PanelView();
-  } else {
-    startView = RegisterView();
-  }
+  // String? uId =await  CacheHelper.getData(key: 'uId');
+  Widget startView = RegisterView();
+  // if (uId != null) {
+  //   startView = PanelView();
+  // } else {
+  //   startView = RegisterView();
+  // }
   runApp(MyApp(startWidget: startView));
 }
 
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           // scaffoldBackgroundColor: AppUI.whiteColor,
         ),
-        home: UsersView(),
+        home: RegisterView(),
       ),
     );
   }
