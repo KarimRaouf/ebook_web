@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ebook_web/features/admin_panel/view_model/model/book_model.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_cubit.dart';
 import 'package:ebook_web/features/admin_panel/views/books_view.dart';
 import 'package:ebook_web/features/admin_panel/views/panel_view.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'core/utils/strings.dart';
 import 'features/auth/view_model/auth_cubit.dart';
 
 Future<void> main() async {
@@ -26,11 +28,15 @@ Future<void> main() async {
     measurementId: "G-JCPJG3JY4K",
   ));
 
-  String? uId =await  CacheHelper.getData(key: 'uId');
-  Widget startView = PanelView();
+  // CacheHelper.removeUserToken();
+  uId = await CacheHelper.getUserToken();
+  Widget startView = BooksView();
   if (uId != null) {
-    startView = PanelView();
+    print(uId);
+    startView = BooksView();
   } else {
+    print(uId);
+
     startView = RegisterView();
   }
   runApp(MyApp(startWidget: startView));
@@ -49,7 +55,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthCubit(),
         ),
-
         BlocProvider(
           create: (context) => PanelCubit(),
         ),
@@ -60,7 +65,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Poppins',
           // scaffoldBackgroundColor: AppUI.whiteColor,
         ),
-        home: UsersView(),
+        home: startWidget,
       ),
     );
   }

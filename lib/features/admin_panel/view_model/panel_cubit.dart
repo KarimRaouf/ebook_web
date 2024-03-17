@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:ebook_web/core/utils/strings.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,7 +14,9 @@ import 'package:flutter_launcher_icons/utils.dart';
 import 'model/book_model.dart';
 
 class PanelCubit extends Cubit<PanelState> {
-  PanelCubit() : super(PanelInitial());
+  PanelCubit() : super(PanelInitial()) {
+    getCurrentUser();
+  }
 
   static PanelCubit get(context) => BlocProvider.of(context);
 
@@ -34,6 +37,33 @@ class PanelCubit extends Cubit<PanelState> {
       print(value.id);
       print("Book Added");
     }).catchError((error) => print("Failed to add book: $error"));
+  }
+
+  Future<void> addRequest() async {
+    CollectionReference request =
+        FirebaseFirestore.instance.collection('requests');
+    var mail =
+        await FirebaseFirestore.instance.collection('users').doc(uId).get();
+
+    final CollectionReference collection =
+        FirebaseFirestore.instance.collection('users');
+
+   await request.doc(uId).set({
+      'uId': uId,
+      'email': mail.data()!['email'],
+    });
+    collection.doc(uId).set(
+      {
+        'status': 'Requested',
+      },
+      SetOptions(
+        merge: true,
+      ),
+    ).then((value) {
+      print("request Added");
+    }).catchError((error) {
+      print("Failed to add request:$error");
+    }); // Use merge option to update the document if it exists
   }
 
   //
@@ -194,7 +224,21 @@ class PanelCubit extends Cubit<PanelState> {
     }
   }
 
+  bool isBannerVisible = true;
 
+  void closeBanner() {
+    isBannerVisible = false;
+    emit(state);
+  }
+
+  Map<String, dynamic>? currentUser;
+
+  Future<void> getCurrentUser() async {
+    var status =
+        await FirebaseFirestore.instance.collection('users').doc(uId).get();
+
+    currentUser = status.data();
+  }
 
   Future<void> updateUserStatus({
     String? userId,
@@ -204,9 +248,11 @@ class PanelCubit extends Cubit<PanelState> {
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
         'status': status,
       });
+
+      emit(ActivateUserState());
       print("user successfully updated!");
     } catch (e) {
-      print("Error updating book: $e");
+      print("Error updating status: $e");
     }
   }
 
