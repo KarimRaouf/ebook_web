@@ -63,7 +63,8 @@ class BooksView extends StatelessWidget {
 
                               return Column(
                                 children: [
-                                  if (panelCubit.currentUser?['status'] == null&&
+                                  if ((panelCubit.currentUser?['status'] == null||
+                                      panelCubit.currentUser?['status'] == 'Inactive')&&
                                       panelCubit.isBannerVisible)
                                     Container(
                                       color: Colors.amberAccent,
@@ -150,7 +151,7 @@ class BooksView extends StatelessWidget {
                                         crossAxisSpacing: 20.0,
                                         mainAxisSpacing: 20.0,
                                       ),
-                                      itemCount: snapshot.data!.docs.length,
+                                      itemCount: snap.data!.docs.length,
                                       itemBuilder: (context, index) {
                                         var book = snap.data!.docs[index].data()
                                             as Map<String,

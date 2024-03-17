@@ -238,6 +238,7 @@ class PanelCubit extends Cubit<PanelState> {
         await FirebaseFirestore.instance.collection('users').doc(uId).get();
 
     currentUser = status.data();
+    emit(state);
   }
 
   Future<void> updateUserStatus({
