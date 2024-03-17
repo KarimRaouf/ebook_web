@@ -2,11 +2,13 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_launcher_icons/utils.dart';
 
 import 'model/book_model.dart';
 
@@ -72,22 +74,35 @@ class PanelCubit extends Cubit<PanelState> {
   //   }
   // }
 
-  Future<String?> uploadFile({required Uint8List fileBytes,
+  Future<String?> uploadFile({
+    required Uint8List fileBytes,
     required String fileName,
-    required String dirName}) async {
+    required String dirName,
+    required String contentType,
+  }) async {
     try {
       // Create a reference to the location you want to upload to in Firebase Storage
       Reference ref = FirebaseStorage.instance.ref('$dirName/$fileName');
 
+      SettableMetadata metadata = SettableMetadata(
+        contentType: contentType,
+        customMetadata: {'picked': 'true'},
+      );
+
       // Upload the file to Firebase Storage
-      UploadTask uploadTask = ref.putData(fileBytes);
+      UploadTask uploadTask = ref.putData(fileBytes, metadata);
 
       // Wait until the file is uploaded then return the download URL
-      TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
+      // TaskSnapshot snapshot = await uploadTask;
+
+      await uploadTask.whenComplete(() => null);
+      String downloadUrl = await ref.getDownloadURL();
+
+      print(downloadUrl);
       return downloadUrl;
     } on FirebaseException catch (e) {
       // Handle any errors
+      print('KarimError');
       print(e);
       return null;
     }
@@ -157,7 +172,6 @@ class PanelCubit extends Cubit<PanelState> {
     }
   }
 
-
   Future<void> updateBook({
     String? bookId,
     String? newAuthor,
@@ -169,14 +183,44 @@ class PanelCubit extends Cubit<PanelState> {
     try {
       await FirebaseFirestore.instance.collection('books').doc(bookId).update({
         'author': newAuthor,
-        'audioLink':newAudio,
-        'category':newCat,
-        'pdfLink':newPdf,
-        'imageUrl':newImage,
+        'audioLink': newAudio,
+        'category': newCat,
+        'pdfLink': newPdf,
+        'imageUrl': newImage,
       });
       print("Book successfully updated!");
     } catch (e) {
       print("Error updating book: $e");
+    }
+  }
+
+
+
+  Future<void> updateUserStatus({
+    String? userId,
+    String? status,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'status': status,
+      });
+      print("user successfully updated!");
+    } catch (e) {
+      print("Error updating book: $e");
+    }
+  }
+
+  Future<dynamic> fetchNetworkImage(imageUrl) async {
+    try {
+      final response = await Dio().get(imageUrl);
+      if (response.statusCode == 200) {
+        print(response.data);
+        return response.data;
+      }
+      return null; // Image not downloaded properly
+    } catch (e) {
+      print(e);
+      return null; // An error occurred
     }
   }
 }

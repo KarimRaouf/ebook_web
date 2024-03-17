@@ -1,5 +1,5 @@
 class Book {
-  String? imageUrl;
+  var imageUrl;
   String? author;
   String? category;
   String? pdfLink;
