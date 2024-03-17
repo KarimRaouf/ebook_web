@@ -2,6 +2,7 @@ import 'package:ebook_web/core/utils/strings.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_cubit.dart';
 import 'package:ebook_web/features/admin_panel/view_model/panel_state.dart';
 import 'package:ebook_web/features/admin_panel/views/books_view.dart';
+import 'package:ebook_web/features/auth/views/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,12 +21,8 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mediaHeight = MediaQuery
-        .sizeOf(context)
-        .height; //!900
-    double mediaWidth = MediaQuery
-        .sizeOf(context)
-        .width; //!400
+    double mediaHeight = MediaQuery.sizeOf(context).height; //!900
+    double mediaWidth = MediaQuery.sizeOf(context).width; //!400
     const border = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.grey, width: 1),
       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -46,7 +43,10 @@ class LoginView extends StatelessWidget {
               CacheHelper.saveUserToken(
                 state.uId,
               ).then((value) {
-                panelCubit.updateUserStatus(userId: state.uId , status: 'Inactive');
+                uId = state.uId;
+
+                panelCubit.updateUserStatus(
+                    userId: state.uId, status: 'Inactive');
                 AppUtil.removeUntilNavigator(context, BooksView());
                 AppUtil.showToast(message: 'Login Successfully');
               });
@@ -103,36 +103,36 @@ class LoginView extends StatelessWidget {
                             const SizedBox(height: 8),
                             state is LoginLoadingState
                                 ? CustomButton(
-                              size: 25,
-                              hasChild: false,
-                              text: 'Login',
-                              onTap: () {},
-                              buttomWidth: mediaWidth > 400
-                                  ? .85 * mediaWidth
-                                  : .75 * mediaWidth,
-                            )
+                                    size: 25,
+                                    hasChild: false,
+                                    text: 'Login',
+                                    onTap: () {},
+                                    buttomWidth: mediaWidth > 400
+                                        ? .85 * mediaWidth
+                                        : .75 * mediaWidth,
+                                  )
                                 : CustomButton(
-                              size: 25,
-                              text: 'Login',
-                              onTap: () {
-                                if (authCubit.loginFormKey.currentState!
-                                    .validate()) {
-                                  authCubit.userLogin(
-                                    email:
-                                    authCubit.emailLoginController.text,
-                                    password: authCubit
-                                        .passwordLoginController.text,
-                                  );
-                                }
-                              },
-                              buttomWidth: mediaWidth > 400
-                                  ? .85 * mediaWidth
-                                  : .75 * mediaWidth,
-                            ),
+                                    size: 25,
+                                    text: 'Login',
+                                    onTap: () {
+                                      if (authCubit.loginFormKey.currentState!
+                                          .validate()) {
+                                        authCubit.userLogin(
+                                          email: authCubit
+                                              .emailLoginController.text,
+                                          password: authCubit
+                                              .passwordLoginController.text,
+                                        );
+                                      }
+                                    },
+                                    buttomWidth: mediaWidth > 400
+                                        ? .85 * mediaWidth
+                                        : .75 * mediaWidth,
+                                  ),
 
                             TextButton(
                               onPressed: () {
-                                AppUtil.mainNavigator(context, LoginView());
+                                AppUtil.mainNavigator(context, RegisterView());
                               },
                               child: const Text(
                                 'Register',

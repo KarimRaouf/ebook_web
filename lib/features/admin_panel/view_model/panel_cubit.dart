@@ -50,7 +50,7 @@ class PanelCubit extends Cubit<PanelState> {
 
    await request.doc(uId).set({
       'uId': uId,
-      'email': mail.data()!['email'],
+      'email': mail.data()?['email'],
     });
     collection.doc(uId).set(
       {

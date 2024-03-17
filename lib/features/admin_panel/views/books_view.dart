@@ -20,7 +20,7 @@ class BooksView extends StatelessWidget {
       listener: (context, state) {
         // TODO: implement listener
 
-        if (state is ActivateUserState) {
+        if (state is ActivateUserState && PanelCubit.get(context).currentUser?['status'] != null) {
           AppUtil.showToast(message: 'Activation Request Sent');
         }
       },
@@ -63,8 +63,7 @@ class BooksView extends StatelessWidget {
 
                               return Column(
                                 children: [
-                                  if (panelCubit.currentUser?['status'] ==
-                                          'Inactive' &&
+                                  if (panelCubit.currentUser?['status'] == null&&
                                       panelCubit.isBannerVisible)
                                     Container(
                                       color: Colors.amberAccent,
