@@ -44,6 +44,13 @@ class UsersView extends StatelessWidget {
                         .collection('requests')
                         .snapshots(),
                     builder: (context, snap) {
+                      if (snap.hasError) {
+                        print(snap.error.toString());
+                        return Text('Something went wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
                       return LayoutBuilder(
                         builder: (context, constraints) {
                           final bool isDesktop = constraints.maxWidth > 800;
@@ -70,7 +77,7 @@ class UsersView extends StatelessWidget {
                                               fontWeight: FontWeight.bold))),
                                 ],
                                 rows: List<DataRow>.generate(
-                                  snap.data!.docs.length,
+                                  snapshot.connectionState == ConnectionState.waiting? 0:snap.data!.docs.length,
                                   // Number of registrations
                                   (index) {
                                     // var users = snapshot.data!.docs[index];
